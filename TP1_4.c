@@ -3,8 +3,8 @@
 #define true 1
 #define false 0
 
-int main(int argc, char** argv)
-	{
+//int main(int argc, char *argv[]){
+int main(void){//pour éviter les warnings vu qu'on utilise pas encore argc, argv
 
 	const char welcome_msg[]="Welcome on board ! Le shell Ensea.\nPour quitter, tapez 'exit'.\n"; 
 	const char prompt[]="enseash % ";

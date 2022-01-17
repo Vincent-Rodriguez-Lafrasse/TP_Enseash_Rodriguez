@@ -3,13 +3,12 @@
 #define true 1
 #define false 0
 
-//int main(int argc, char *argv[]){
-int main(void){//pour éviter les warnings vu qu'on utilise pas encore argc, argv
-	
+int main(void)//je n'arrive pas à le faire fonctionner avec: int main(int argc, char *argv[]){
+	{
 	const char welcome_msg[]="Welcome on board ! Le shell Ensea.\nPour quitter, tapez 'exit'.\n"; 
 	const char prompt[]="enseash % ";
 	const char exit_msg[]="\nA bientot !\n";
-
+	char* argv[10];
 
 	write(STDOUT_FILENO,welcome_msg,sizeof(welcome_msg));//STDOUT permet d'afficher un message sur la console sans utiliser printf
 	write(STDOUT_FILENO,prompt,sizeof(prompt));
@@ -20,6 +19,7 @@ int main(void){//pour éviter les warnings vu qu'on utilise pas encore argc, arg
 	int pid,status;
 	int cmd_lenght;
 	int size;
+	
 
 
 	struct timespec start, stop; //sert à la mesure du temps avec gettime()
@@ -39,7 +39,7 @@ int main(void){//pour éviter les warnings vu qu'on utilise pas encore argc, arg
 			{
 			wait(&status);// on attend que tous les processus soient terminés
 			clock_gettime( CLOCK_REALTIME, &stop);//on récupère le temps à la fin de l'execution
-			temps = ((stop.tv_nsec - start.tv_nsec )/1000000); //permet d'obtenir la durée d'execution en ms
+			temps = ((stop.tv_nsec - start.tv_nsec )/1000000)+((stop.tv_sec - start.tv_sec )*1000); //permet d'obtenir la durée d'execution en ms
 	 		
 	 		if(WIFEXITED(status) == true){ //on va determine si le fils s'est termiuné normalement ou à cause d'un signal
 	 		stringSTATUS[0] =(WTERMSIG(status)&0xf) +'0';
@@ -52,8 +52,7 @@ int main(void){//pour éviter les warnings vu qu'on utilise pas encore argc, arg
 
 			if (WIFSIGNALED(status) == true){
 			stringSTATUS[0]=(WTERMSIG(status)&0xf) +'0';//Je bloquais, et après demande d'aide, on m'a donné cette formule
-
-			write(STDOUT_FILENO,"enseash [sign:",sizeof("enseash [sign:"));
+			write(STDOUT_FILENO,"enseash [sign:he",sizeof("enseash [sign:"));
 		 	write(STDOUT_FILENO,stringSTATUS,1);
 		 	sprintf(msgTemps,"|%ldms] %%",temps); //je pensais qu'on avait pas le droit d'utiliser sprintf,d'ou mon usage tardif
 		 	write(STDOUT_FILENO,msgTemps,strlen(msgTemps));
@@ -69,8 +68,19 @@ int main(void){//pour éviter les warnings vu qu'on utilise pas encore argc, arg
 
 		else //Je suis dans le fils
 			{
-   			execlp(cmd,cmd,(char*)NULL) ; //contient un exit quand la commande est exécutée
-   			exit(EXIT_FAILURE); //On ferme le processus fils si on a mis une commande inconnue
+   			
+			argv[0]=strtok(cmd," "); //fonctione pour ls -l mais pas sleep 5, je ne comprends pas
+			int i=0;
+            while((argv[i]!=NULL)){
+                i=i+1;
+                argv[i]=strtok(NULL," ");
+            }
+
+			execvp(argv[0],argv); //Appel plus performant, gestion des paramètres d'entrées multiples
+			
+			write(STDOUT_FILENO, "Commande inconnue", strlen("Commande inconnue"));
+			exit(EXIT_FAILURE);
+
 			}
 			
 		if (strncmp("exit",cmd, strlen("exit"))==0)//on ferme si on tape exit

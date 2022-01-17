@@ -1,8 +1,9 @@
 #include "Enseash.h"
 #define CMD_SIZE 100
 
-int main(int argc, char *argv[])
-	{
+//int main(int argc, char *argv[]){
+int main(void){//pour éviter les warnings vu qu'on utilise pas encore argc, argv
+	
 	const char welcome_msg[]="Welcome on board ! Le shell Ensea.\nPour quitter, tapez 'exit'.\n"; 
 	const char prompt[]="enseash % ";
 	const char exit_msg[]="A bientot !\n";
@@ -34,6 +35,7 @@ int main(int argc, char *argv[])
 			execlp(cmd,cmd,(char*)NULL) ; //contient un exit quand la commande est exécutée
 			exit(EXIT_FAILURE); //On ferme le processus fils si on a mis une commande inconnue
 			}
+
 		if (strncmp("exit",cmd, strlen("exit"))==0)//on ferme si on tape exit
 			{
 			write(STDOUT_FILENO,exit_msg,sizeof(exit_msg)); 
@@ -44,7 +46,7 @@ int main(int argc, char *argv[])
 			write(STDOUT_FILENO,exit_msg,sizeof(exit_msg)); //on aurait pu le combiner avec le if du dessus mais moins claire pour les commentaires
 			exit(EXIT_SUCCESS);
 			}			
-		write(STDOUT_FILENO,prompt,sizeof(prompt));
+	write(STDOUT_FILENO,prompt,sizeof(prompt));
 	}
 
 

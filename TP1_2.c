@@ -1,13 +1,12 @@
 #include "Enseash.h"
 #define CMD_SIZE 100
 
-int main(int argc, char *argv[])
-	{
+//int main(int argc, char *argv[]){
+int main(void){//pour éviter les warnings vu qu'on utilise pas encore argc, argv
+	
 	const char welcome_msg[]="Welcome on board ! Le shell Ensea.\nPour quitter, tapez 'exit'.\n"; 
 	const char prompt[]="enseash % ";
-	const char exit_msg[]="A bientot !\n";
-
-
+	
 	write(STDOUT_FILENO,welcome_msg,sizeof(welcome_msg));//STDOUT permet d'afficher un message sur la console sans utiliser printf
 	write(STDOUT_FILENO,prompt,sizeof(prompt));
 
